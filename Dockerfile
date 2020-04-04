@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/jlo
 LABEL org.opencontainers.image.version="1.0.1"
 LABEL org.opencontainers.image.description="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
 LABEL org.opencontainers.image.vendor="private"
-LABEL org.clamav.version="0.102.1"
+LABEL org.clamav.version="devel"
 LABEL org.clamav-unofficial-sigs.version="7.0.1"
 LABEL org.alpine.version="3.11"
 
