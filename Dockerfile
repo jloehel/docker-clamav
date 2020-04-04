@@ -85,8 +85,8 @@ RUN set -eux; \
     && make \
     && make check \
     && make install \
-    && groupadd clamav \
-    && useradd -g clamav -s /bin/false -c "Clam Antivirus" clamav \
+    && addgroup -S clamav \
+    && adduser -G clamav -s /bin/false -HS clamav \
     && install -d -m755 /data \
     && mkdir -p -m 0755 /var/run/clamav \
     && mkdir -p /var/spool/amavis \
