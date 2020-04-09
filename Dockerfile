@@ -31,6 +31,7 @@ RUN set -eux; \
         wget \
         curl \
         bash \
+        tar \
         bind-tools \
         rsync \
         ncurses \
