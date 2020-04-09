@@ -49,6 +49,13 @@ services:
       internal-network:
         aliases:
         - clamav
+    ports:
+      - "127.0.0.1:3310:3310"
+    healthcheck:
+      test: ["CMD-SHELL", "echo PING | nc 127.0.0.1 3310 | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   clamav_data:
