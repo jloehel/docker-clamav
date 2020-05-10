@@ -4,7 +4,8 @@ Clamd is listening on `0.0.0.0`, `TCP/3310.`
 
 ## Supported tags and respective Dockerfile links
 * `devel`
-* `0.102.1-alpine-3.11-r2`, `latest`
+* `0.102.1-r0-alpine-3.11.6-r1`, `latest`
+* `0.102.1-alpine-3.11-r2`
 * `0.102.1-alpine-3.11-r1`,
 
 ## Devel Image
