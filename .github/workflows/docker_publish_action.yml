@@ -22,6 +22,6 @@ jobs:
     - name: Push the tagged Docker image
       run: docker push jloehel/clamav:${{steps.vars.outputs.tag}}
     - name: Build the latest Docker image
-      run: docker tag jloehel/clamav:${{steps.vars.outputs.tag}} --tag jloehel/clamav:latest
+      run: docker tag jloehel/clamav:${{steps.vars.outputs.tag}} jloehel/clamav:latest
     - name: Push the latest Docker image
       run: docker push jloehel/clamav:latest
