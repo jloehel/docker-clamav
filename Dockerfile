@@ -65,6 +65,7 @@ RUN set -eux; \
     && export CXXFLAGS="-fmessage-length=0 -grecord-gcc-switches -O3 -D_FORTIFY_SOURCE=2 -fstack-protector -funwind-tables -fasynchronous-unwind-tables -fPIE -fno-strict-aliasing -std=gnu++98" \
     && export LDFLAGS="-pie" \
     && export LIBS="-lfts" \
+    && ./autogen.sh \
     && ./configure \
 		    --prefix=/usr \
 		    --libdir=/usr/lib \
