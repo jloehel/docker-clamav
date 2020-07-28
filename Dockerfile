@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.11.6
+ARG ALPINE_VERSION=3.12.0
 
 FROM amd64/alpine:${ALPINE_VERSION}
 LABEL maintainer="Jürgen Löhel <juergen@loehel.de>"
@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/jlo
 LABEL org.opencontainers.image.version="1.0.3"
 LABEL org.opencontainers.image.description="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
 LABEL org.opencontainers.image.vendor="private"
-LABEL org.clamav.version="devel"
+LABEL org.clamav.version="devel-5b168b50cdd0c0650eca3047097a3f6919e8ab64"
 LABEL org.clamav-unofficial-sigs.version="7.0.1"
 LABEL org.alpine.version="3.12.0"
 
@@ -17,7 +17,8 @@ EXPOSE 3310
 
 ENV OS_ARCH="amd64" \
     OS_FLAVOR="alpine-3.12.0" \
-    OS_NAME="linux"
+    OS_NAME="linux" \
+    GIT_COMIT="5b168b50cdd0c0650eca3047097a3f6919e8ab64"
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
@@ -48,7 +49,7 @@ RUN set -eux; \
         check-dev \
         check \
         libmspack-dev \
-        python-dev \
+        python3-dev \
         git \
         wget \
         curl \
@@ -61,6 +62,7 @@ RUN set -eux; \
         bash \
     && cd /tmp && git clone https://github.com/Cisco-Talos/clamav-devel \
     && cd /tmp/clamav-devel \
+    && git checkout 5b168b50cdd0c0650eca3047097a3f6919e8ab64 \
     && export CFLAGS="-fmessage-length=0 -grecord-gcc-switches -O3 -D_FORTIFY_SOURCE=2 -fstack-protector -funwind-tables -fasynchronous-unwind-tables -fPIE -fno-strict-aliasing" \
     && export CXXFLAGS="-fmessage-length=0 -grecord-gcc-switches -O3 -D_FORTIFY_SOURCE=2 -fstack-protector -funwind-tables -fasynchronous-unwind-tables -fPIE -fno-strict-aliasing -std=gnu++98" \
     && export LDFLAGS="-pie" \
