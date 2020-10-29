@@ -6,10 +6,10 @@ LABEL org.opencontainers.image.title="Private ClamAV Container"
 LABEL org.opencontainers.image.authors="Jürgen Löhel"
 LABEL org.opencontainers.image.source="https://github.com/jloehel/docker-clamav"
 LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/jloehel/clamav"
-LABEL org.opencontainers.image.version="1.1.1"
+LABEL org.opencontainers.image.version="1.2.1"
 LABEL org.opencontainers.image.description="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
 LABEL org.opencontainers.image.vendor="private"
-LABEL org.clamav.version="0.102.4-r0"
+LABEL org.clamav.version="0.102.4-r1"
 LABEL org.clamav-unofficial-sigs.version="7.0.1"
 LABEL org.alpine.version="3.12.0"
 
@@ -26,7 +26,7 @@ CMD ["clamd"]
 RUN set -eux; \
     apk update \
     && apk add --no-cache \
-        clamav=0.102.4-r0 \
+        clamav=0.102.4-r1 \
         clamav-libunrar \
         wget \
         curl \
