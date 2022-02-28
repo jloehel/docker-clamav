@@ -6,7 +6,7 @@ if [ ! -s /data/main.cvd  ];then
     freshclam
 fi
 
-if [ ! -s /var/lib/clamav-unofficial-sigs/dbs-ss/Sanesecurity_spam.yara ];then
+if [ ! -s /data/Sanesecurity_spam.yara ];then
     /usr/local/sbin/clamav-unofficial-sigs --force
 fi
 
