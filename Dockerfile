@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.15.0
+ARG ALPINE_VERSION=3.17.0
 
 FROM amd64/alpine:${ALPINE_VERSION}
 LABEL maintainer="Jürgen Löhel <juergen@loehel.de>"
@@ -6,10 +6,10 @@ LABEL org.opencontainers.image.title="Private ClamAV Container"
 LABEL org.opencontainers.image.authors="Jürgen Löhel"
 LABEL org.opencontainers.image.source="https://github.com/jloehel/docker-clamav"
 LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/jloehel/clamav"
-LABEL org.opencontainers.image.version="1.2.3"
+LABEL org.opencontainers.image.version="1.2.4"
 LABEL org.opencontainers.image.description="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
 LABEL org.opencontainers.image.vendor="private"
-LABEL org.clamav.version="0.104.1-r0"
+LABEL org.clamav.version="0.105.1-r0"
 LABEL org.clamav-unofficial-sigs.version="7.2.5"
 LABEL org.alpine.version=${ALPINE_VERSION}
 
@@ -26,7 +26,7 @@ CMD ["clamd"]
 RUN set -eux; \
     apk update \
     && apk add --no-cache \
-        clamav=0.104.1-r0 \
+        clamav=0.105.1-r0 \
         clamav-libunrar \
         wget \
         curl \
