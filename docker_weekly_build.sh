@@ -11,8 +11,9 @@ echo "Weekly Build"
 echo "========================================"
 
 # Get latest tags per OS flavor
-ALPINE_TAG=$(git tag -l 'alpine-*' --sort=-v:refname | head -1)
-UBUNTU_TAG=$(git tag -l 'ubuntu-*' --sort=-v:refname | head -1)
+# Tag format: <os_flavor>/<os_version>/<app_version>/<unofficial_sigs_version>/<build>
+ALPINE_TAG=$(git tag -l 'alpine/*' --sort=-v:refname | head -1)
+UBUNTU_TAG=$(git tag -l 'ubuntu/*' --sort=-v:refname | head -1)
 
 # Build Alpine if tag exists
 if [ -n "$ALPINE_TAG" ]; then

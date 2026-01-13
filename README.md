@@ -8,7 +8,7 @@ Docker image for ClamAV with unofficial signatures from [eXtremeSHOK.com](https:
 ## Features
 
 - **Multi-OS Support**: Alpine Linux and Ubuntu
-- **Multi-Architecture**: amd64
+- **Multi-Architecture**: amd64 and arm64
 - **Unofficial Signatures**: Integrated clamav-unofficial-sigs for extended malware detection
 - **Rootless Support**: NSS wrapper for OpenShift/Kubernetes compatibility
 - **Docker Secrets**: Support for sensitive configuration via `_FILE` environment variables
@@ -19,11 +19,31 @@ Docker image for ClamAV with unofficial signatures from [eXtremeSHOK.com](https:
 
 | Tag | OS | Description |
 |-----|-----|-------------|
-| `latest` | Alpine 3.21 | Latest stable Alpine build |
-| `alpine-latest` | Alpine 3.21 | Latest Alpine build |
-| `alpine-3.21-<version>` | Alpine 3.21 | Versioned Alpine build |
+| `latest` | Alpine 3.23 | Latest stable Alpine build |
+| `alpine-latest` | Alpine 3.23 | Latest Alpine build |
+| `alpine-3.23-1.4.3-7.2.5-1` | Alpine 3.23 | Versioned Alpine build |
+| `1.4.3-alpine` | Alpine | ClamAV version specific |
 | `ubuntu-latest` | Ubuntu 24.04 | Latest Ubuntu build |
-| `ubuntu-24.04-<version>` | Ubuntu 24.04 | Versioned Ubuntu build |
+| `ubuntu-24.04-1.4.3-7.2.5-1` | Ubuntu 24.04 | Versioned Ubuntu build |
+| `1.4.3-ubuntu` | Ubuntu | ClamAV version specific |
+
+### Git Tag Format
+
+Git tags use `/` as separator for clarity with version numbers containing `-`:
+
+```text
+<os_flavor>/<os_version>/<clamav_version>/<unofficial_sigs_version>/<build>
+```
+
+Examples:
+
+- `alpine/3.23/1.4.3/7.2.5/1`
+- `ubuntu/24.04/1.4.3/7.2.5/1`
+
+Docker tags convert `/` to `-`:
+
+- `alpine-3.23-1.4.3-7.2.5-1`
+- `ubuntu-24.04-1.4.3-7.2.5-1`
 
 ## Quick Start
 

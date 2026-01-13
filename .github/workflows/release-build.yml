@@ -19,8 +19,8 @@ jobs:
       - name: Get release tag
         id: release
         run: |
-          # Tag format: <os_flavor>-<os_version>-<app_version>-<unofficial_sigs_version>
-          # Example: alpine-3.23-1.4.3-7.2.5
+          # Tag format: <os_flavor>/<os_version>/<app_version>/<unofficial_sigs_version>/<build>
+          # Example: alpine/3.23/1.4.3/7.2.5/1
           TAG="${GITHUB_REF#refs/tags/}"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "Release tag: ${TAG}"

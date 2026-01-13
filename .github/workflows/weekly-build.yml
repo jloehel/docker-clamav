@@ -25,10 +25,11 @@ jobs:
       - name: Get latest tags per OS flavor
         id: get_tags
         run: |
+          # Tag format: <os_flavor>/<os_version>/<app_version>/<unofficial_sigs_version>/<build>
           # Get latest alpine tag
-          ALPINE_TAG=$(git tag -l 'alpine-*' --sort=-v:refname | head -1)
+          ALPINE_TAG=$(git tag -l 'alpine/*' --sort=-v:refname | head -1)
           # Get latest ubuntu tag
-          UBUNTU_TAG=$(git tag -l 'ubuntu-*' --sort=-v:refname | head -1)
+          UBUNTU_TAG=$(git tag -l 'ubuntu/*' --sort=-v:refname | head -1)
 
           # Build JSON array of tags to build
           TAGS="["

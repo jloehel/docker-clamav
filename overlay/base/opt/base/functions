@@ -1,4 +1,5 @@
-#!/bin/bash -e
+# shellcheck shell=bash
+# This file is sourced, not executed directly
 
 [[ ${BASH_DEBUG:-false} = true ]] && set -x
 

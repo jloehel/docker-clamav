@@ -27,7 +27,7 @@ if [[ "$1" == "/run.sh" ]]; then
         echo "${APP_USERNAME}:x:$(id -u):$(id -g):ClamAV user:${CLAMAV_HOME}:/bin/false" > "$NSS_WRAPPER_PWD"
         echo "${APP_USERNAME}:x:$(id -g):" > "$NSS_WRAPPER_GROUP"
         export NSS_WRAPPER_PASSWD="$NSS_WRAPPER_PWD"
-        export NSS_WRAPPER_GROUP="$NSS_WRAPPER_GROUP"
+        export NSS_WRAPPER_GROUP
         export LD_PRELOAD="$LIBNSS_WRAPPER_PATH"
     fi
 
