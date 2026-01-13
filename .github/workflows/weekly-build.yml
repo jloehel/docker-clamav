@@ -1,0 +1,88 @@
+name: Weekly Build
+
+on:
+  schedule:
+    # Every Sunday at 02:00 UTC
+    - cron: "0 2 * * 0"
+  workflow_dispatch:
+
+env:
+  APP_NAME: clamav
+  APP_USERNAME: clamav
+
+jobs:
+  get-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.get_tags.outputs.tags }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Get latest tags per OS flavor
+        id: get_tags
+        run: |
+          # Get latest alpine tag
+          ALPINE_TAG=$(git tag -l 'alpine-*' --sort=-v:refname | head -1)
+          # Get latest ubuntu tag
+          UBUNTU_TAG=$(git tag -l 'ubuntu-*' --sort=-v:refname | head -1)
+
+          # Build JSON array of tags to build
+          TAGS="["
+          if [ -n "$ALPINE_TAG" ]; then
+            TAGS="${TAGS}\"${ALPINE_TAG}\""
+          fi
+          if [ -n "$UBUNTU_TAG" ]; then
+            if [ -n "$ALPINE_TAG" ]; then
+              TAGS="${TAGS},"
+            fi
+            TAGS="${TAGS}\"${UBUNTU_TAG}\""
+          fi
+          TAGS="${TAGS}]"
+
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+          echo "Tags to build: ${TAGS}"
+
+  build:
+    needs: get-tags
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: ./docker_build.sh
+        env:
+          CI_BUILD: "true"
+          IMAGE_VERSION: ${{ matrix.tag }}
+          IMAGE_DESCRIPTION: "ClamAV ${{ matrix.tag }} weekly rebuild"
+
+      - name: Push to registries
+        run: ./docker_push.sh
+        env:
+          CI_BUILD: "true"
+          IMAGE_VERSION: ${{ matrix.tag }}
+          REGISTRIES: "ghcr.io/jloehel docker.io/jloehel"
+          PUSH_LATEST: "true"

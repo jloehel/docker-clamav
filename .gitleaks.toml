@@ -1,0 +1,19 @@
+# Gitleaks configuration
+# https://github.com/gitleaks/gitleaks
+
+title = "Gitleaks Configuration"
+
+[allowlist]
+description = "Global allowlist"
+paths = [
+    '''\.secrets\.baseline$''',
+    '''go\.sum$''',
+    '''package-lock\.json$''',
+    '''yarn\.lock$''',
+]
+
+# Additional rules can be added here
+# [[rules]]
+# id = "custom-rule"
+# description = "Custom secret detection rule"
+# regex = '''pattern'''

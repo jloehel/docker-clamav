@@ -1,62 +1,58 @@
-ARG ALPINE_VERSION=3.17.0
+ARG OS_FLAVOR=alpine
+ARG OS_VERSION=3.23
 
-FROM amd64/alpine:${ALPINE_VERSION}
+FROM ${OS_FLAVOR}:${OS_VERSION}
+
+ARG ARCH=amd64
+ARG OS=linux
+ARG OS_FLAVOR=alpine
+ARG OS_VERSION=3.23
+ARG IMAGE_VERSION=2.0.0
+ARG IMAGE_DESCRIPTION="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
+ARG APP_NAME=clamav
+ARG APP_NAME_UPPER=CLAMAV
+ARG APP_VERSION=1.4.3
+ARG UNOFFICIAL_SIGS_VERSION=7.2.5
+ARG APP_USERNAME=clamav
+ARG APP_USER_DEFAULT=1001
+
 LABEL maintainer="Jürgen Löhel <juergen@loehel.de>"
-LABEL org.opencontainers.image.title="Private ClamAV Container"
+LABEL org.opencontainers.image.title="ClamAV customized docker image by jloehel"
 LABEL org.opencontainers.image.authors="Jürgen Löhel"
-LABEL org.opencontainers.image.source="https://github.com/jloehel/docker-clamav"
-LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/jloehel/clamav"
-LABEL org.opencontainers.image.version="1.2.4"
-LABEL org.opencontainers.image.description="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
-LABEL org.opencontainers.image.vendor="private"
-LABEL org.clamav.version="0.105.1-r0"
-LABEL org.clamav-unofficial-sigs.version="7.2.5"
-LABEL org.alpine.version=${ALPINE_VERSION}
+LABEL org.opencontainers.image.source="https://github.com/jloehel/docker-${APP_NAME}"
+LABEL org.opencontainers.image.url="https://github.com/jloehel/docker-${APP_NAME}"
+LABEL org.opencontainers.image.version="${IMAGE_VERSION}"
+LABEL org.opencontainers.image.description="${IMAGE_DESCRIPTION}"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.${OS_FLAVOR}.version="${OS_VERSION}"
+LABEL org.clamav.version="${APP_VERSION}"
+LABEL org.clamav-unofficial-sigs.version="${UNOFFICIAL_SIGS_VERSION}"
+
+ENV ARCH="${ARCH}" \
+    OS="${OS}" \
+    OS_FLAVOR="${OS_FLAVOR}" \
+    OS_VERSION="${OS_VERSION}" \
+    APP_NAME="${APP_NAME}" \
+    APP_VERSION="${APP_VERSION}" \
+    APP_USERNAME="${APP_USERNAME}" \
+    CLAMAV_HOME="/clamav/data" \
+    NSS_WRAPPER_GROUP="/opt/${APP_NAME}/nss_group" \
+    NSS_WRAPPER_PWD="/opt/${APP_NAME}/nss_passwd"
+
+COPY ./overlay/base /
+COPY ./overlay/${OS_FLAVOR} /
+
+RUN set -eux; \
+    . /build/update.sh && \
+    . /build/install-dependencies.sh && \
+    . /build/install-app.sh && \
+    . /build/clean.sh
 
 EXPOSE 3310
 
-ENV OS_ARCH="amd64" \
-    OS_FLAVOR="alpine-${ALPINE_VERSION}" \
-    OS_NAME="linux"
-
-COPY entrypoint.sh /entrypoint.sh
+WORKDIR /opt/${APP_NAME}/
+USER ${APP_USER_DEFAULT}
+VOLUME ["/clamav/data"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 CMD /healthcheck.sh
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["clamd"]
-
-RUN set -eux; \
-    apk update \
-    && apk add --no-cache \
-        clamav=0.105.1-r0 \
-        clamav-libunrar \
-        wget \
-        curl \
-        bash \
-        tar \
-        bind-tools \
-        rsync \
-        ncurses \
-    && rm -rf /var/cache/apk/* /usr/src/* \
-    && mkdir -p /var/run/clamav/ \
-    && mkdir -p /data \
-    && mkdir -p /usr/local/sbin/ \
-    && mkdir -p /etc/clamav-unofficial-sigs/ \
-    && mkdir -p /var/lib/clamav-unofficial-sigs/ \
-    && chown clamav:clamav /var/run/clamav \
-    && chown clamav:clamav /data \
-    && chown clamav:clamav /entrypoint.sh \
-    && chown clamav:clamav /var/lib/clamav-unofficial-sigs \
-    && chmod u+x /entrypoint.sh \
-    && curl https://raw.githubusercontent.com/extremeshok/clamav-unofficial-sigs/master/clamav-unofficial-sigs.sh -o /usr/local/sbin/clamav-unofficial-sigs \
-    && curl https://raw.githubusercontent.com/extremeshok/clamav-unofficial-sigs/master/config/master.conf -o /etc/clamav-unofficial-sigs/master.conf \
-    && curl https://raw.githubusercontent.com/extremeshok/clamav-unofficial-sigs/master/config/user.conf -o /etc/clamav-unofficial-sigs/user.conf \
-    && chmod 755 /usr/local/sbin/clamav-unofficial-sigs
-
-COPY ./overlay /
-
-RUN /usr/local/sbin/clamav-unofficial-sigs --install-logrotate \
-    && /usr/local/sbin/clamav-unofficial-sigs --install-man \
-    && /usr/local/sbin/clamav-unofficial-sigs --install-cron
-
-WORKDIR /data
-USER clamav
-VOLUME ["/data"]
+CMD ["/run.sh"]

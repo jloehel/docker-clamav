@@ -1,0 +1,17 @@
+---
+# Hadolint configuration
+# https://github.com/hadolint/hadolint
+
+ignored:
+  # Don't require pinning package versions
+  - DL3008  # apt-get: Pin versions
+  - DL3018  # apk: Pin versions
+  - DL3013  # pip: Pin versions
+  # Allow multiple RUN instructions for readability
+  - DL3059
+
+trustedRegistries:
+  - docker.io
+  - ghcr.io
+
+failure-threshold: warning

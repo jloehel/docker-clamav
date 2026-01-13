@@ -1,0 +1,61 @@
+name: Test Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+env:
+  APP_NAME: clamav
+  APP_USERNAME: clamav
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os_flavor: alpine
+            os_version: "3.23"
+          - os_flavor: ubuntu
+            os_version: "24.04"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image (test only)
+        run: ./docker_build.sh
+        env:
+          IMAGE_VERSION: "pr-${{ github.event.pull_request.number }}-${{ matrix.os_flavor }}"
+          IMAGE_DESCRIPTION: "ClamAV PR #${{ github.event.pull_request.number }} test build"
+          OS_FLAVOR: ${{ matrix.os_flavor }}
+          OS_VERSION: ${{ matrix.os_version }}
+
+      - name: Test container starts
+        run: |
+          IMAGE="${APP_NAME}:pr-${{ github.event.pull_request.number }}-${{ matrix.os_flavor }}"
+          echo "Testing image: ${IMAGE}"
+
+          # Start container in background
+          docker run -d --name clamav-test "${IMAGE}"
+
+          # Wait for startup
+          sleep 30
+
+          # Check if container is still running
+          if docker ps | grep -q clamav-test; then
+            echo "✓ Container is running"
+            docker logs clamav-test | tail -20
+          else
+            echo "✗ Container failed to start"
+            docker logs clamav-test
+            exit 1
+          fi
+
+          # Cleanup
+          docker stop clamav-test
+          docker rm clamav-test

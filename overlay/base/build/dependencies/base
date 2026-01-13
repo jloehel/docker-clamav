@@ -1,0 +1,7 @@
+sudo
+wget
+curl
+tar
+rsync
+gzip
+bash
