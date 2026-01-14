@@ -8,11 +8,11 @@ ARG OS=linux
 ARG OS_FLAVOR=alpine
 ARG OS_VERSION=3.23
 ARG IMAGE_VERSION=2.0.0
-ARG IMAGE_DESCRIPTION="Image containing ClamAV and ClamAV Unofficial Signatures Updater maintained by eXtremeSHOK.com"
+ARG IMAGE_DESCRIPTION="ClamAV with fangfrisch unofficial signatures"
 ARG APP_NAME=clamav
 ARG APP_NAME_UPPER=CLAMAV
 ARG APP_VERSION=1.4.3
-ARG UNOFFICIAL_SIGS_VERSION=7.2.5
+ARG FANGFRISCH_VERSION=1.9.2
 ARG APP_USERNAME=clamav
 ARG APP_USER_DEFAULT=1001
 
@@ -26,7 +26,7 @@ LABEL org.opencontainers.image.description="${IMAGE_DESCRIPTION}"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.${OS_FLAVOR}.version="${OS_VERSION}"
 LABEL org.clamav.version="${APP_VERSION}"
-LABEL org.clamav-unofficial-sigs.version="${UNOFFICIAL_SIGS_VERSION}"
+LABEL org.fangfrisch.version="${FANGFRISCH_VERSION}"
 
 ENV ARCH="${ARCH}" \
     OS="${OS}" \

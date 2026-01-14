@@ -9,6 +9,6 @@ export IMAGE_DESCRIPTION="nightly ClamAV build"
 export APP_NAME=clamav
 export APP_VERSION=1.4.3-r2
 export APP_USERNAME=clamav
-export UNOFFICIAL_SIGS_VERSION=7.2.5
+export FANGFRISCH_VERSION=1.9.2
 
 ./docker_build.sh

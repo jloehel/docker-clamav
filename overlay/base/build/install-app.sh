@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# This script installs ClamAV and unofficial signatures
+# This script installs ClamAV and fangfrisch
 
 set -eux
 
@@ -16,7 +16,8 @@ if [ "${OS_FLAVOR}" = "alpine" ]; then
         clamav-daemon \
         clamav-libunrar \
         freshclam \
-        nss_wrapper
+        nss_wrapper \
+        py3-pip
 fi
 
 if [ "${OS_FLAVOR}" = "opensuse/leap" ]; then
@@ -24,7 +25,7 @@ if [ "${OS_FLAVOR}" = "opensuse/leap" ]; then
     freshclam_config=/etc/freshclam.conf
     zypper -n ar -f "https://download.opensuse.org/repositories/security/openSUSE_Leap_${OS_VERSION}/security.repo" || true
     zypper --gpg-auto-import-keys -n ref
-    zypper -n in clamav
+    zypper -n in clamav python3-pip
     # Busybox crond Symlink
     if [ -f /usr/bin/busybox ] && [ ! -f /usr/sbin/crond ]; then
         ln -s /usr/bin/busybox /usr/sbin/crond
@@ -38,30 +39,21 @@ if [ "${OS_FLAVOR}" = "debian" ] || [ "${OS_FLAVOR}" = "ubuntu" ]; then
     apt-get -y install \
         clamav \
         clamav-daemon \
-        clamav-freshclam
+        clamav-freshclam \
+        python3-pip \
+        python3-venv
     # Busybox crond Symlink
     if [ -f /usr/bin/busybox ] && [ ! -f /usr/sbin/crond ]; then
         ln -s /usr/bin/busybox /usr/sbin/crond
     fi
 fi
 
-# ClamAV unofficial sigs installation
-GIT_REPO="https://raw.githubusercontent.com/extremeshok/clamav-unofficial-sigs"
+# Install fangfrisch and jinja2 from PyPI
+pip install --no-cache-dir --break-system-packages fangfrisch jinja2
 
-mkdir -p /etc/clamav-unofficial-sigs
-mkdir -p /var/lib/clamav-unofficial-sigs
-
-curl -fsSL "${GIT_REPO}/${UNOFFICIAL_SIGS_VERSION}/clamav-unofficial-sigs.sh" -o /usr/sbin/clamav-unofficial-sigs.sh
-curl -fsSL "${GIT_REPO}/${UNOFFICIAL_SIGS_VERSION}/config/master.conf" -o /etc/clamav-unofficial-sigs/master.conf
-curl -fsSL "${GIT_REPO}/${UNOFFICIAL_SIGS_VERSION}/config/user.conf" -o /etc/clamav-unofficial-sigs/user.conf
-
-chmod 755 /usr/sbin/clamav-unofficial-sigs.sh
-
-# Shebang korrigieren
-sed -i 's|^#!/usr/bin/env bash|#!/bin/bash|g' /usr/sbin/clamav-unofficial-sigs.sh
-
-# Work directory konfigurieren
-sed -i 's|work_dir=".*"|work_dir="/clamav/data/unofficial"|g' /etc/clamav-unofficial-sigs/master.conf
+# Create fangfrisch directories
+mkdir -p /etc/fangfrisch
+mkdir -p /var/lib/fangfrisch
 
 # User konfigurieren
 if [ -n "${clamd_config}" ] && [ -f "${clamd_config}" ]; then
@@ -82,8 +74,8 @@ if ! id "${APP_USERNAME}" >/dev/null 2>&1; then
 fi
 
 # Verzeichnisse erstellen und Berechtigungen setzen
-mkdir -p /opt/clamav /clamav/data/official /clamav/data/unofficial/configs
-mkdir -p /var/log/clamav-unofficial-sigs /var/log/clamav
+mkdir -p /opt/clamav /clamav/data/official /clamav/data/unofficial
+mkdir -p /var/log/clamav
 mkdir -p /opt/crontabs
 mkdir -p /run/clamav
 ln -sf /run/clamav /var/run/clamav 2>/dev/null || true
@@ -91,18 +83,19 @@ ln -sf /run/clamav /var/run/clamav 2>/dev/null || true
 chown -R "${APP_USERNAME}":0 \
     /opt/clamav \
     /clamav \
-    /var/log/clamav-unofficial-sigs \
+    /var/lib/fangfrisch \
+    /etc/fangfrisch \
     /run/clamav \
     /var/log/clamav \
-    /opt/crontabs \
-    /etc/clamav-unofficial-sigs
+    /opt/crontabs
 
 # Set group write permissions and setgid for group inheritance
 chmod -R g+rwX \
     /opt/clamav \
     /opt/crontabs \
     /clamav \
-    /var/log/clamav-unofficial-sigs \
+    /var/lib/fangfrisch \
+    /etc/fangfrisch \
     /run/clamav \
     /var/log/clamav
 
@@ -110,9 +103,9 @@ chmod -R g+rwX \
 find /clamav -type d -exec chmod g+s {} \;
 find /opt/clamav -type d -exec chmod g+s {} \;
 find /var/log/clamav -type d -exec chmod g+s {} \;
-find /var/log/clamav-unofficial-sigs -type d -exec chmod g+s {} \;
+find /var/lib/fangfrisch -type d -exec chmod g+s {} \;
 
-chmod g+w /run /etc/clamav-unofficial-sigs/user.conf
+chmod g+w /run
 
 # Marker für erfolgreiche Installation
 touch /opt/clamav/ok

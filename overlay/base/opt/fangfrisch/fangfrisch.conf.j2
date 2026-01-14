@@ -1,0 +1,61 @@
+# Fangfrisch configuration
+# Auto-generated from environment variables
+# See: https://rseichter.github.io/fangfrisch/
+
+[DEFAULT]
+db_url = sqlite:///{{ db_path }}
+local_directory = {{ local_directory }}
+log_level = {{ log_level }}
+log_method = console
+max_size = {{ max_size }}
+on_update_exec = {{ on_update_exec }}
+on_update_timeout = {{ on_update_timeout }}
+{% if connection_timeout %}
+connection_timeout = {{ connection_timeout }}
+{% endif %}
+
+# =============================================================================
+# Free Signature Providers
+# =============================================================================
+
+{% if sanesecurity_enabled %}
+[sanesecurity]
+enabled = yes
+interval = {{ sanesecurity_interval }}
+{% if sanesecurity_prefix %}
+prefix = {{ sanesecurity_prefix }}
+{% endif %}
+{% endif %}
+
+{% if urlhaus_enabled %}
+[urlhaus]
+enabled = yes
+interval = {{ urlhaus_interval }}
+max_size = {{ urlhaus_max_size }}
+{% endif %}
+
+{% if interserver_enabled %}
+[interserver]
+enabled = yes
+interval = {{ interserver_interval }}
+{% endif %}
+
+# =============================================================================
+# Premium Signature Providers (require credentials)
+# =============================================================================
+
+{% if malwarepatrol_enabled and malwarepatrol_receipt %}
+[malwarepatrol]
+enabled = yes
+interval = {{ malwarepatrol_interval }}
+receipt = {{ malwarepatrol_receipt }}
+product = {{ malwarepatrol_product }}
+{% endif %}
+
+{% if securiteinfo_enabled and securiteinfo_customer_id %}
+[securiteinfo]
+enabled = yes
+interval = {{ securiteinfo_interval }}
+customer_id = {{ securiteinfo_customer_id }}
+max_size = {{ securiteinfo_max_size }}
+{% endif %}
