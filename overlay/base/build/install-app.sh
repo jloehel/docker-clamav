@@ -15,9 +15,7 @@ if [ "${OS_FLAVOR}" = "alpine" ]; then
         clamav \
         clamav-daemon \
         clamav-libunrar \
-        freshclam \
-        nss_wrapper \
-        py3-pip
+        freshclam
 fi
 
 if [ "${OS_FLAVOR}" = "opensuse/leap" ]; then
@@ -36,12 +34,23 @@ if [ "${OS_FLAVOR}" = "debian" ] || [ "${OS_FLAVOR}" = "ubuntu" ]; then
     clamd_config=/etc/clamav/clamd.conf
     freshclam_config=/etc/clamav/freshclam.conf
     export DEBIAN_FRONTEND=noninteractive
-    apt-get -y install \
+    export DEBCONF_NONINTERACTIVE_SEEN=true
+
+    # Configure dpkg to not ask questions and keep existing configs
+    echo 'Dpkg::Options {"--force-confdef";"--force-confold";}' > /etc/apt/apt.conf.d/local
+
+    # Create ucf cache directory (needed by clamav-freshclam postinst)
+    mkdir -p /var/lib/ucf/cache
+
+    # Install python3-minimal first to prevent python3-pip pulling full python3
+    apt-get -y install --no-install-recommends python3-minimal
+
+    apt-get -y install --no-install-recommends \
         clamav \
         clamav-daemon \
         clamav-freshclam \
-        python3-pip \
-        python3-venv
+        python3-pip
+
     # Busybox crond Symlink
     if [ -f /usr/bin/busybox ] && [ ! -f /usr/sbin/crond ]; then
         ln -s /usr/bin/busybox /usr/sbin/crond
@@ -74,7 +83,7 @@ if ! id "${APP_USERNAME}" >/dev/null 2>&1; then
 fi
 
 # Verzeichnisse erstellen und Berechtigungen setzen
-mkdir -p /opt/clamav /clamav/data/official /clamav/data/unofficial
+mkdir -p /opt/clamav /clamav/data
 mkdir -p /var/log/clamav
 mkdir -p /opt/crontabs
 mkdir -p /run/clamav

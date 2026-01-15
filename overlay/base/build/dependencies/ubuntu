@@ -1,5 +1,3 @@
 tini
 libnss-wrapper
-dnsutils
 busybox-static
-libcap2-bin
