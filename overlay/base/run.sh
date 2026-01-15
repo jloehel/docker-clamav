@@ -15,7 +15,7 @@ FANGFRISCH_DB="/var/lib/fangfrisch/db.sqlite"
 
 setup_env() {
     declare -g CLAMDB_ALREADY_EXISTS
-    if [ -f "/clamav/data/official/ok" ]; then
+    if [ -f "/clamav/data/.db_initialized" ]; then
         CLAMDB_ALREADY_EXISTS='true'
     fi
 
@@ -58,8 +58,8 @@ update_official_db() {
         info "Downloading official ClamAV database (first run)..."
         freshclam || true
         # Fix permissions - freshclam ignores umask
-        chmod -R g+rw /clamav/data/official/ 2>/dev/null || true
-        touch /clamav/data/official/ok
+        chmod -R g+rw /clamav/data/ 2>/dev/null || true
+        touch /clamav/data/.db_initialized
     else
         info "Official ClamAV database already exists, skipping initial download."
     fi
@@ -95,7 +95,7 @@ cat > /tmp/freshclam-wrapper.sh << 'FRESHCLAM_WRAPPER'
 while true; do
     freshclam --checks=1
     # Fix permissions after update - freshclam ignores umask
-    chmod -R g+rw /clamav/data/official/ 2>/dev/null || true
+    chmod -R g+rw /clamav/data/ 2>/dev/null || true
     # Sleep for 1 hour (24 checks per day)
     sleep 3600
 done

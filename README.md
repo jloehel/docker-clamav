@@ -137,11 +137,11 @@ secrets:
 |----------|---------|-------------|
 | `FANGFRISCH_LOG_LEVEL` | `INFO` | Log level: DEBUG, INFO, WARNING, ERROR, FATAL |
 | `FANGFRISCH_MAX_SIZE` | `10MB` | Default maximum file size |
-| `FANGFRISCH_ON_UPDATE_EXEC` | `clamdscan --reload` | Command to run after signature updates |
+| `FANGFRISCH_ON_UPDATE_EXEC` | `pkill -HUP clamd` | Command to run after signature updates |
 | `FANGFRISCH_ON_UPDATE_TIMEOUT` | `60` | Timeout for on_update_exec in seconds |
 | `FANGFRISCH_CONNECTION_TIMEOUT` | *(not set)* | Network connection timeout in seconds |
 | `FANGFRISCH_DB_PATH` | `/var/lib/fangfrisch/db.sqlite` | SQLite database path |
-| `FANGFRISCH_LOCAL_DIRECTORY` | `/clamav/data/unofficial` | Directory for unofficial signatures |
+| `FANGFRISCH_LOCAL_DIRECTORY` | `/clamav/data` | Directory for unofficial signatures |
 
 ### Free Signature Providers
 
@@ -178,7 +178,7 @@ InterServer security signatures.
 
 ### Premium Signature Providers
 
-These providers require credentials. They are enabled by default but will only be activated if credentials are provided.
+These providers require credentials and are disabled by default.
 
 #### MalwarePatrol
 
@@ -186,7 +186,7 @@ Commercial malware signature database.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MALWAREPATROL_ENABLED` | `true` | Enable/disable provider |
+| `MALWAREPATROL_ENABLED` | `false` | Enable/disable provider |
 | `MALWAREPATROL_RECEIPT` | *(required)* | MalwarePatrol receipt code |
 | `MALWAREPATROL_PRODUCT` | `8` | MalwarePatrol product code |
 | `MALWAREPATROL_INTERVAL` | `1d` | Update interval |
@@ -197,7 +197,7 @@ Commercial security signatures with extended coverage.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SECURITEINFO_ENABLED` | `true` | Enable/disable provider |
+| `SECURITEINFO_ENABLED` | `false` | Enable/disable provider |
 | `SECURITEINFO_CUSTOMER_ID` | *(required)* | SecuriteInfo customer ID |
 | `SECURITEINFO_INTERVAL` | `1h` | Update interval |
 | `SECURITEINFO_MAX_SIZE` | `20MB` | Maximum file size |
@@ -239,10 +239,8 @@ services:
 |------|-------------|
 | `/clamav/data` | Database directory (official + unofficial signatures) |
 
-The volume contains:
-
-- `/clamav/data/official/` - Official ClamAV signatures (freshclam)
-- `/clamav/data/unofficial/` - Unofficial signatures (fangfrisch)
+All signature databases (both official ClamAV and fangfrisch unofficial) are
+stored in the same directory so ClamAV can find them.
 
 ## Ports
 

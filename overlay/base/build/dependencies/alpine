@@ -1,4 +1,4 @@
-bind-tools
-ncurses
+bash
 tini
-libcap
+nss_wrapper
+py3-pip

@@ -11,7 +11,7 @@ General Settings:
     FANGFRISCH_ON_UPDATE_TIMEOUT - Timeout for on_update_exec (default: 60)
     FANGFRISCH_CONNECTION_TIMEOUT - Network connection timeout (default: not set)
     FANGFRISCH_DB_PATH          - SQLite database path (default: /var/lib/fangfrisch/db.sqlite)
-    FANGFRISCH_LOCAL_DIRECTORY  - Directory for signatures (default: /clamav/data/unofficial)
+    FANGFRISCH_LOCAL_DIRECTORY  - Directory for signatures (default: /clamav/data)
 
 Free Providers:
     SANESECURITY_ENABLED        - Enable Sanesecurity (default: true)
@@ -26,12 +26,12 @@ Free Providers:
     INTERSERVER_INTERVAL        - Update interval (default: 1h)
 
 Premium Providers (require credentials):
-    MALWAREPATROL_ENABLED       - Enable MalwarePatrol (default: false, but requires receipt)
+    MALWAREPATROL_ENABLED       - Enable MalwarePatrol (default: false)
     MALWAREPATROL_RECEIPT       - MalwarePatrol receipt code (required to enable)
     MALWAREPATROL_PRODUCT       - MalwarePatrol product code (default: 8)
     MALWAREPATROL_INTERVAL      - Update interval (default: 1d)
 
-    SECURITEINFO_ENABLED        - Enable SecuriteInfo (default: false, but requires customer_id)
+    SECURITEINFO_ENABLED        - Enable SecuriteInfo (default: false)
     SECURITEINFO_CUSTOMER_ID    - SecuriteInfo customer ID (required to enable)
     SECURITEINFO_INTERVAL       - Update interval (default: 1h)
     SECURITEINFO_MAX_SIZE       - Max file size (default: 20MB)
@@ -97,10 +97,10 @@ def main():
     config = {
         # General settings
         "db_path": get_env("FANGFRISCH_DB_PATH", "/var/lib/fangfrisch/db.sqlite"),
-        "local_directory": get_env("FANGFRISCH_LOCAL_DIRECTORY", "/clamav/data/unofficial"),
+        "local_directory": get_env("FANGFRISCH_LOCAL_DIRECTORY", "/clamav/data"),
         "log_level": get_env("FANGFRISCH_LOG_LEVEL", "INFO"),
         "max_size": get_env("FANGFRISCH_MAX_SIZE", "10MB"),
-        "on_update_exec": get_env("FANGFRISCH_ON_UPDATE_EXEC", "clamdscan --reload"),
+        "on_update_exec": get_env("FANGFRISCH_ON_UPDATE_EXEC", "pkill -HUP clamd"),
         "on_update_timeout": get_env("FANGFRISCH_ON_UPDATE_TIMEOUT", "60"),
         "connection_timeout": get_env("FANGFRISCH_CONNECTION_TIMEOUT", ""),
 
@@ -151,12 +151,8 @@ def main():
         print("  - InterServer (free)")
     if config["malwarepatrol_enabled"] and config["malwarepatrol_receipt"]:
         print("  - MalwarePatrol (premium)")
-    elif config["malwarepatrol_enabled"]:
-        print("  - MalwarePatrol (disabled - no receipt configured)")
     if config["securiteinfo_enabled"] and config["securiteinfo_customer_id"]:
         print("  - SecuriteInfo (premium)")
-    elif config["securiteinfo_enabled"]:
-        print("  - SecuriteInfo (disabled - no customer_id configured)")
 
 
 if __name__ == "__main__":
