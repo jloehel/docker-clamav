@@ -19,13 +19,13 @@ Docker image for ClamAV with unofficial signatures via [fangfrisch](https://gith
 
 | Tag | OS | Description |
 |-----|-----|-------------|
-| `latest` | Alpine 3.23 | Latest stable Alpine build |
-| `alpine-latest` | Alpine 3.23 | Latest Alpine build |
-| `alpine-3.23-1.4.3-1.9.2-1` | Alpine 3.23 | Versioned Alpine build |
-| `1.4.3-alpine` | Alpine | ClamAV version specific |
-| `ubuntu-latest` | Ubuntu 24.04 | Latest Ubuntu build |
-| `ubuntu-24.04-1.4.3-1.9.2-1` | Ubuntu 24.04 | Versioned Ubuntu build |
-| `1.4.3-ubuntu` | Ubuntu | ClamAV version specific |
+| `latest` | Alpine 3.24 | Latest stable Alpine build |
+| `alpine-latest` | Alpine 3.24 | Latest Alpine build |
+| `alpine-3.24-1.4.6-r0-1.9.3-1` | Alpine 3.24 | Versioned Alpine build |
+| `1.4.6-r0-alpine` | Alpine | ClamAV version specific |
+| `ubuntu-latest` | Ubuntu 26.04 | Latest Ubuntu build |
+| `ubuntu-26.04-1.5.4-1.9.3-1` | Ubuntu 26.04 | Versioned Ubuntu build |
+| `1.5.4-ubuntu` | Ubuntu | ClamAV version specific |
 
 ### Git Tag Format
 
@@ -259,16 +259,16 @@ stored in the same directory so ClamAV can find them.
 ### Ubuntu
 
 ```bash
-OS_FLAVOR=ubuntu OS_VERSION=24.04 ./docker_build.sh
+OS_FLAVOR=ubuntu OS_VERSION=26.04 ./docker_build.sh
 ```
 
 ### With specific versions
 
 ```bash
 export OS_FLAVOR=alpine
-export OS_VERSION=3.23
-export APP_VERSION=1.4.3
-export FANGFRISCH_VERSION=1.9.2
+export OS_VERSION=3.24
+export APP_VERSION=1.4.6
+export FANGFRISCH_VERSION=1.9.3
 ./docker_build.sh
 ```
 
