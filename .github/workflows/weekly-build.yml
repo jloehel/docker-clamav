@@ -87,3 +87,11 @@ jobs:
           IMAGE_VERSION: ${{ matrix.tag }}
           REGISTRIES: "ghcr.io/jloehel docker.io/jloehel"
           PUSH_LATEST: "true"
+  clean:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup untagged GHCR images
+        uses: dataaxiom/ghcr-cleanup-action@d52806a0dc70b430571a37da1fde39733ffd640f # v1.2.2
+        with:
+          package: ${{ env.APP_NAME }}
